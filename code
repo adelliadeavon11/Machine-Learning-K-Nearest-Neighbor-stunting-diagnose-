@@ -1,1 +1,123 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+from sklearn.preprocessing import MinMaxScaler
+import seaborn as sns
+df = pd.read_csv('/content/Stunted.csv')  ----- load dataset ----
+df
+------ menghapus atribut ------
+df.drop(columns=["No","Nama"],
+        inplace=True)
+df.head()
+df.info()
+df.describe()
+df['Status Gizi'].value_counts()
+df['Jenis Kelamin'].value_counts()
+------ remove nilai P ------
+indices_p = df[df['Jenis Kelamin'] == 'p'].index
+------ delete Nilai P ------
+if len(indices_p) >= 7:
+indices_to_drop = indices_p[:7]
+df = df.drop(indices-to_drop)
+else:
+print("Jumlah entri 'p' tidak mencukupi untuk penghapusan") 
+------Hasil-----
+print(df('Jenis kelamin').value_counts()) 
+----Histogram----
+sns.hitplot(df['Jenis Kelamin']) 
+print(df.columns)
+-----check duplikat data-----
+df=df.drop_duplicates()
+-----menampilkan duplikat data----
+df.duplicates().sum()
+-----visualisasi data----
+sns.set_themes(style='ticks') 
+sns.countplot(y='Status Gizi', data=df, palette='flare')
+plt.ylabel("Diagnosa Pasien")
+plt.xlabel('Total/jumlah')
+plt.show()
+-----jenis kelamin------
+sns.set_theme(style='darkgrid')
+sns.countplot(y='Jenis Kelamin', data=df, palette='rocket')
+plt.ylabel("Jumlah")
+plt.xlabel('Jenis Kelamin (P=Perempuan, L=Laki-Laki)') 
+plt.show()
+df.head() 
+-----label encoder-----
+from sklearn.preprocessing import LabelEncoder 
+import pandas as pd 
+Label_encoder = LabelEncoder()
+df['Jenis Kelamin'] = label_encoder.fit_transform(df['Jenis Kelamin'])
+df['Status Gizi'] = label_encoder.fit_transform(df['Status Gizi']) 
+df.head()
+----splitting data----
+x = df.drop(columns=['Status Gizi']) 
+y = df['Status Gizi'] 
+print("x : ", x.shape)
+print("y : ", y.shape) 
+----memisahkan fitur (x) dan target (y)-------
+= df[['Jenis Kelamin', 'Umur (bulan)', 'Berat (kg)', 'Tinggi (cm)', 'BMI']]
+= df['Status Gizi'] 
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+-----modeling----
+knn = KNeighborsClassifier(n_neighbors=3) 
+knn.fit(x_train, y_train) 
+y_pred = knn.predict(x_test)
+knn_acc = accuracy_score(y_pred, y_test) 
+print(classification_report(y_test, y_pred)) 
+print('Akurasi KNN : {:.2f}%'.format(KNN_acc*100))
+------confusion matriks----
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test) 
+cm = confusion_matrix(y_test, y_pred) 
+labels = ['normal', 'tinggi', 'severely stunting'. 'stunting']
+-----visualisasi confusion matriks------
+sns.heatmap(cm, =True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix for Stunting Diagnosis')
+plt.show()
+------Diagnosis-----
+testing = {'Umur (bulan)' : [12.0],
+'Jenis Kelamin' : [1.0],
+'BMI' : [25.3],
+'Tinggi (cm)' : [5.10],
+'Berat (kg)' : [9.1]}
+
+testing = pd.DataFrame(testing)
+testing
+(output merupakan dataFrame yg akan digunakan untuk diagnosa) 
+
+Pasien 1
+testing = pd.DataFrame({
+    'Umur (bulan)': [24],
+    'Berat (kg)': [10],
+    'Tinggi (cm)': [80],
+    'BMI': [15.6],
+    'Jenis Kelamin' : [1]
+})
+testing = testing[x_train.columns]
+
+pred_coba = knn.predict(testing)
+print("Hasil Prediksi dari Pasien Baru")
+print(pred_coba)
+(Output berupa hasil prediksi dari pasien baru : 3) 
+
+Pasien 2 
+testing = pd.DataFrame({
+    'Umur (bulan)': [45],
+    'Berat (kg)': [07.08],
+    'Tinggi (cm)': [82],
+    'BMI': [11.00],
+    'Jenis Kelamin' : [0]
+})
+testing = testing[x_train.columns]
+pred_coba = knn.predict(testing)
+print("Hasil Prediksi dari Pasien Baru")
+print(pred_coba)
+
 
